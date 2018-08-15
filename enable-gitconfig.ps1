@@ -1,3 +1,5 @@
 function enable-gitconfig {
-    Get-ChildItem $home/.gitconfig.disabled -Hidden | Rename-Item -NewName .gitconfig -Force
+    if (Test-Path $home/.gitconfig.disabled){
+        Get-ChildItem $home/.gitconfig.disabled -Hidden | Rename-Item -NewName .gitconfig -Force
+    }
 }
