@@ -7,10 +7,18 @@ function Set-GitProxy {
         $Proxy
     )
     begin {
-        If ((@($Proxy).count -gt 1) -and (-not (Get-Command 'Test-Connection' -ErrorAction SilentlyContinue))) { 
-            Write-Warning "Set-GitProxy could not run as it requires Test-Connection to process multiple proxy strings:"
-            $Proxy
-            Break
+        If (@($Proxy).count -gt 1) {
+            If (-not (Get-Command 'Test-Connection' -ErrorAction SilentlyContinue)) { 
+                Write-Warning "Set-GitProxy could not run as it requires Test-Connection to process multiple proxy strings:"
+                $Proxy
+                Break
+            }
+            Else {
+                If ($PSCmdlet.ShouldProcess('Unset git proxy')) {
+                    git config --global --unset http.proxy
+                    git config --global --unset https.proxy
+                }
+            }
         }
     }
     process {
@@ -24,7 +32,7 @@ function Set-GitProxy {
                 $Server = $ProxyEntry
                 $Port = 80
             }
-                        
+
             If ((@($Proxy).count -eq 1) -or (Test-Connection $Server -TCPPort $Port -TimeoutSeconds 1 -Quiet)) {
                 Try {
                     If ($PSCmdlet.ShouldProcess($ProxyEntry)) {
@@ -38,6 +46,6 @@ function Set-GitProxy {
                     Throw $_
                 }
             }
-        }        
+        }
     }
 }
