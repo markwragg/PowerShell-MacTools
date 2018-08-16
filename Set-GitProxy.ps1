@@ -8,7 +8,7 @@ function Set-GitProxy {
     )
     begin {
         If ((@($Proxy).count -gt 1) -and (-not (Get-Command 'Test-Connection' -ErrorAction SilentlyContinue))) { 
-            Write-Warning 'Set-GitProxy could not run automatically. Use Set-GitProxy to set one of these manually:'
+            Write-Warning "Set-GitProxy could not run as it requires Test-Connection to process multiple proxy strings:"
             $Proxy
             Break
         }
