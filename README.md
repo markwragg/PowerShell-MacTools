@@ -8,9 +8,8 @@ A full list of cmdlets in this module is provided below for reference. Use `Get-
 
 Cmdlet            | Description
 ------------------| -------------------------------------------------------------------------------------------------------
-Set-GitProxy      | Sets the Global Git HTTP and HTTPS Proxy setting to a specified server and port, or if you provide an array of server:port strings, will test each in turn and set the proxy to the first to respond (this requires PS 6.1+ on Mac). If none respond, the proxy is unset.
-Remove-GitProxy   | Unsets the Global Git HTTP and HTTPS Proxy settings.
+Set-Proxy         | Can be used to set the System and Git HTTP and HTTPS Proxy setting to a specified server and port, or if you provide an array of server:port strings, will test each in turn and set the proxy to the first to respond (this requires PS 6.1+ on Mac). If none respond, the proxy is unset.
+Remove-Proxy      | Can be used to unset the System and Git HTTP and HTTPS Proxy settings.
 Disable-GitConfig | Renames the .gitconfig file in your home directory to .gitconfig.disabled. Useful because I have Git proxy settings for work that do not work at home.
 Enable-GitConfig  | Renames the .gitconfig file in your home directory back to .gitconfig.
 Rename-ToLower    | Renames a file to the same name but all lowercase. Just to make it easier to navigate case sensitive filesystem.
-
