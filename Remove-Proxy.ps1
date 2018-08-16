@@ -24,6 +24,12 @@ function Remove-Proxy {
                 $env:https_proxy = $null  
                 Write-Host 'System proxy has been unset.' -ForegroundColor Green  
             }
+        }
+        Catch {
+            Throw $_
+        }
+
+        Try {
             If ($Git -or $All) {
                 git config --global --unset http.proxy
                 git config --global --unset https.proxy

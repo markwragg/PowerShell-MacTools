@@ -54,26 +54,32 @@ function Set-Proxy {
                 $Port = 80
             }
 
-            If ((@($Proxy).count -eq 1) -or (Test-Connection $Server -TCPPort $Port -TimeoutSeconds 1 -Quiet)) {
-                Try {
-                    If ($PSCmdlet.ShouldProcess($ProxyEntry)) {
+            If ((@($Proxy).count -eq 1) -or (Test-Connection $Server -TCPPort $Port -Quiet)) {
+                If ($PSCmdlet.ShouldProcess($ProxyEntry)) {
+                    Try {
                         If ($System -or $All) {
                             $env:http_proxy = $ProxyEntry
                             $env:https_proxy = $ProxyEntry
                             Write-Host "System Proxy has been set to $ProxyEntry" -ForegroundColor Green
                         }
+                    }
+                    Catch {
+                        Throw $_
+                    }
+
+                    Try {
                         If ($Git -or $All) {
                             git config --global http.proxy $ProxyEntry
                             git config --global https.proxy $ProxyEntry
                             Write-Host "Git Proxy has been set to $ProxyEntry" -ForegroundColor Green
                         }
-                        
                     }
-                    Break ProxyCheck
+                    Catch {
+                        Throw $_
+                    }
                 }
-                Catch {
-                    Throw $_
-                }
+                #We have set a working Proxy, so stop the loop.
+                Break ProxyCheck
             }
         }
     }
