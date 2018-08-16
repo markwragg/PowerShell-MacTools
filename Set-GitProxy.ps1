@@ -2,19 +2,20 @@ function Set-GitProxy {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         #One or more Proxy settings, with server and port separated via a ':'.
-        [Parameter(ValueFromPipeline,Mandatory,Position=0)]
+        [Parameter(Mandatory, Position = 0)]
         [string[]]
         $Proxy
     )
     begin {
-        if (-not (Get-Command 'Test-Connection' -ErrorAction SilentlyContinue)) { 
-            Write-Warning 'Set-GitProxy could not run as it requires the Test-Connection cmdlet.'
+        If ((@($Proxy).count -gt 1) -and (-not (Get-Command 'Test-Connection' -ErrorAction SilentlyContinue))) { 
+            Write-Warning 'Set-GitProxy could not run automatically. Use Set-GitProxy to set one of these manually:'
+            $Proxy
             Break
         }
     }
     process {
         :ProxyCheck ForEach ($ProxyEntry in $Proxy) {
-            
+                        
             If ($ProxyEntry -match ':') {
                 $Server = ($ProxyEntry -Split ':')[0]
                 $Port = ($ProxyEntry -Split ':')[1]
@@ -23,8 +24,8 @@ function Set-GitProxy {
                 $Server = $ProxyEntry
                 $Port = 80
             }
-            
-            If (Test-Connection $Server -TCPPort $Port -TimeoutSeconds 1 -Quiet) {
+                        
+            If ((@($Proxy).count -eq 1) -or (Test-Connection $Server -TCPPort $Port -TimeoutSeconds 1 -Quiet)) {
                 Try {
                     If ($PSCmdlet.ShouldProcess($ProxyEntry)) {
                         git config --global http.proxy $ProxyEntry
@@ -37,6 +38,6 @@ function Set-GitProxy {
                     Throw $_
                 }
             }
-        }
+        }        
     }
 }
